@@ -1,0 +1,16 @@
+.modify-newsletter-container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.modify-newsletter-options-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.newsletter-actions-holder{
+    flex-wrap: wrap;
+    display: flex;
+    gap: 20px;
+}

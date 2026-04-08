@@ -1,0 +1,26 @@
+.add-newsletter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 900px;
+  width: 100%;
+}
+
+.add-newsletter-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-style: solid;
+  border-radius: 0.5rem;
+  padding: 2rem;
+}
+
+.add-newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#content-textarea {
+  height: 200px;
+}
