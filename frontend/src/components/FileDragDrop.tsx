@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 
+interface Props{
+  onFileChange: (file: File | File[] | null) => void;
+}
+
 const fileTypes: string[] = ["JPG", "PNG", "GIF"];
 
-const DragDrop: React.FC = () => {
+function DragDrop({ onFileChange }: Props){
   const [file, setFile] = useState<File | File[] | null>(null);
 
   const handleChange = (incomingFile: File | File[] | null): void => {
     setFile(incomingFile);
+    onFileChange(incomingFile);
   };
 
   return (
