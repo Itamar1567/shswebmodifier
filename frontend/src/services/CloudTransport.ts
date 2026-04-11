@@ -2,59 +2,60 @@ import type { CreateNewsletterDTO } from "../interfaces/CreateNewsletterDTO";
 
 const backend_url = "http://localhost:5100/";
 
-async function generateSignedUrlForFileUpload(
-  file: File | File[] | null,
-): Promise<string> {
+async function generateSignedUrlForFileUpload(file: File): Promise<string> {
   try {
     const res = await fetch(
       `${backend_url}api/cloudstorage/generate-signed-url`,
       {
         method: "POST",
         body: JSON.stringify({
-          name: file
-            ? Array.isArray(file)
-              ? file[0].name
-              : file.name
-            : "",
-            type: file
-            ? Array.isArray(file)
-              ? file[0].type
-              : file.type
-            : ""
+          name: file.name,
+          type: file.type,
+          size: file.size,
         }),
         headers: { "Content-Type": "application/json" },
       },
     );
 
+    const data = await res.json();
+
     if (!res.ok) {
-      throw new Error("Failed to generate signed URL");
+      console.error("Error response from server:", data);
+      throw new Error(data.message);
     }
 
-    const data = await res.json();
-    console.log(data.message);
     return data.signedUrl;
   } catch (error) {
-    console.error("Error generating signed URL:", error);
-    throw new Error("Could not generate signed URL");
+    throw new Error(
+      `Failed to generate signed URL: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
-async function UploadFile(file: File | File[] | null): Promise<void> {
+async function UploadFile(file: File): Promise<void> {
   try {
     const url = await generateSignedUrlForFileUpload(file);
     const res = await fetch(url, {
       method: "PUT",
-      body: file ? (Array.isArray(file) ? file[0] : file) : null,
+      body: file,
+      headers: {
+        "Content-Type": file.type,
+      },
     });
-    console.log("Upload response:", res);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(
+        `Failed to upload file. Status: ${res.status}, Response: ${errorText}`,
+      );
+    }
   } catch (error) {
-    throw new Error(
-      "Having trouble uploading the file. Please try again later.",
-    );
+    throw error;
   }
 }
+
 export async function UploadNewsletterToBackend(
-  file: File | File[] | null,
+  file: File | null,
   newsletterData: CreateNewsletterDTO,
 ): Promise<string> {
   try {
@@ -63,9 +64,9 @@ export async function UploadNewsletterToBackend(
       newsletterData.image_path = "some";
     }
 
-    return "uploaded";
+    return "Newsletter succesfully added!";
   } catch (error) {
-    console.error("Error uploading file:", error);
-    return "Having trouble uploading the file. Please try again later.";
+    console.log(error);
+    throw error;
   }
 }

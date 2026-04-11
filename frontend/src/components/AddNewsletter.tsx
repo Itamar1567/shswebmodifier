@@ -42,14 +42,17 @@ function AddNewsletter() {
       slug: newNewsLetter.title.toLowerCase().replace(/\s+/g, "-"),
     };
 
-    console.log("Submitting newsletter:", updatedNewsletter);
-    console.log("Selected file:", file);
     try{
-      const res = await UploadNewsletterToBackend(file, updatedNewsletter)
+
+      //Dearrayify the file if it's an array
+      const newFile = Array.isArray(file) ? file[0] : file;
+      setFile(newFile);
+
+      const res = await UploadNewsletterToBackend(newFile, updatedNewsletter)
       alert(res);
-    }catch(err){
-      console.error("Error uploading newsletter:", err);
-      alert(err);
+
+    }catch(error){
+      alert(error instanceof Error ? error.message : "Something went wrong");
       return;
     }
     
