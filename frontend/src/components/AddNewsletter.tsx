@@ -44,10 +44,17 @@ function AddNewsletter() {
 
     console.log("Submitting newsletter:", updatedNewsletter);
     console.log("Selected file:", file);
+    try{
+      const res = await UploadNewsletterToBackend(file, updatedNewsletter)
+      alert(res);
+    }catch(err){
+      console.error("Error uploading newsletter:", err);
+      alert(err);
+      return;
+    }
+    
 
-    const res = await UploadNewsletterToBackend(file, updatedNewsletter)
-
-    alert(res)
+    
     
     resetNewsLetter();
   };

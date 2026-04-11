@@ -5,11 +5,11 @@ interface Props{
   onFileChange: (file: File | File[] | null) => void;
 }
 
-const fileTypes: string[] = ["JPG", "PNG", "GIF"];
+const fileTypes: string[] = ["JPG", "PNG"];
 
 function DragDrop({ onFileChange }: Props){
   const [file, setFile] = useState<File | File[] | null>(null);
-
+  
   const handleChange = (incomingFile: File | File[] | null): void => {
     setFile(incomingFile);
     onFileChange(incomingFile);

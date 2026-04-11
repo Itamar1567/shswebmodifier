@@ -11,11 +11,16 @@ async function generateSignedUrlForFileUpload(
       {
         method: "POST",
         body: JSON.stringify({
-          objectName: file
+          name: file
             ? Array.isArray(file)
               ? file[0].name
               : file.name
             : "",
+            type: file
+            ? Array.isArray(file)
+              ? file[0].type
+              : file.type
+            : ""
         }),
         headers: { "Content-Type": "application/json" },
       },
@@ -34,8 +39,7 @@ async function generateSignedUrlForFileUpload(
   }
 }
 
-async function UploadFile(
-  file: File | File[] | null): Promise<void> {
+async function UploadFile(file: File | File[] | null): Promise<void> {
   try {
     const url = await generateSignedUrlForFileUpload(file);
     const res = await fetch(url, {
@@ -44,7 +48,6 @@ async function UploadFile(
     });
     console.log("Upload response:", res);
   } catch (error) {
-    console.error("Error uploading file:", error);
     throw new Error(
       "Having trouble uploading the file. Please try again later.",
     );
