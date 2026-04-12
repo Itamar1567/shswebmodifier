@@ -4,6 +4,7 @@ import ModifyNewsletters from "./components/ModifyNewsletters";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ModifyTitle from "./components/ModifyTitle";
 import AddNewsletter from "./components/AddNewsletter";
+import DeleteNewsLetter from "./components/DeleteNewsletter";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           ></Route>
           <Route path="/title" element={<ModifyTitle></ModifyTitle>}></Route>
           <Route path="/add-newsletter" element={<AddNewsletter></AddNewsletter>}></Route>
+          <Route path="/delete-newsletter" element={<DeleteNewsLetter></DeleteNewsLetter>}></Route>
         </Routes>
       </div>
     </Router>

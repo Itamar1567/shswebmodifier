@@ -1,0 +1,12 @@
+#back-button {
+  align-self: flex-start;
+  margin: 20px;
+}
+.delete-newsletter-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  border-radius: 9px;
+  gap: 55px;
+}
+

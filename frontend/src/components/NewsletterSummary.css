@@ -1,0 +1,19 @@
+#newsletter_summary-image{
+    max-width: 900px;
+    max-height: 350px;
+}
+
+.newsletter-summary-container{
+    border-style: solid;
+    padding: 2rem;
+    border-radius: 3rem;
+    max-width: 900px;
+    max-height: 500px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    background-color: aliceblue;
+}
+
+.newsletter-summary-container:hover{
+    opacity: 0.5;
+}

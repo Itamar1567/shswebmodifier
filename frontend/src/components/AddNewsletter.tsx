@@ -69,6 +69,15 @@ function AddNewsletter() {
         <p>Here you can add a newsletter to the website.</p>
         <form className="add-newsletter-form" onSubmit={onSubmitForm}>
           <input
+            value={newNewsLetter.author}
+            type="text"
+            placeholder="Author"
+            onChange={(e) =>
+              setNewNewsLetter({ ...newNewsLetter, author: e.target.value })
+            }
+            required
+          ></input>
+          <input
             value={newNewsLetter.title}
             type="text"
             placeholder="Title"
