@@ -27,15 +27,14 @@ async function generateSignedUrlForFileUpload(file: File): Promise<string> {
     }
 
     return data.signedUrl;
-
   } catch (error) {
     throw new Error(
-      `${error instanceof Error ? error.message : String(error)}`
+      `${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
 
-async function UploadFile(file: File): Promise<void> {
+export async function UploadFile(file: File): Promise<void> {
   try {
     const url = await generateSignedUrlForFileUpload(file);
     const res = await fetch(url, {
@@ -47,22 +46,26 @@ async function UploadFile(file: File): Promise<void> {
     });
 
     if (!res.ok) {
-      throw new Error(
-        `Failed to upload file.`,
-      );
+      throw new Error(`Failed to upload file.`);
     }
   } catch (error) {
     throw error;
   }
 }
 
-async function sendDataNewsletterDataToDatabase(newsLetterData: CreateNewsletterDTO){
-  try{
-    const res = await fetch(`${backend_url}api/newsletter`, {method: "POST", body: JSON.stringify(newsLetterData), headers: {"Content-Type": "application/json"}})
-    
+async function sendDataNewsletterDataToDatabase(
+  newsLetterData: CreateNewsletterDTO,
+) {
+  try {
+    const res = await fetch(`${backend_url}api/newsletter`, {
+      method: "POST",
+      body: JSON.stringify(newsLetterData),
+      headers: { "Content-Type": "application/json" },
+    });
+
     const data = await res.json();
 
-    if(!res.ok){
+    if (!res.ok) {
       console.error("Error response from server:", data);
       throw new Error(data.message);
     }
@@ -70,15 +73,12 @@ async function sendDataNewsletterDataToDatabase(newsLetterData: CreateNewsletter
     console.log("Response from server:", data);
 
     return data.message;
-    
-  }catch(error){
+  } catch (error) {
     console.error("Error uploading newsletter data to database:", error);
-    throw new Error(`Failed to upload newsletter data to database: ${error instanceof Error ? error.message : String(error)}`)
+    throw new Error(
+      `Failed to upload newsletter data to database: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
-} 
-
-export async function OverrideNewsletterById(file: File | null, newsletterDataOverride: CreateNewsletterDTO, idToOverride: number){
-
 }
 
 export async function UploadNewsletterToBackend(
@@ -86,7 +86,6 @@ export async function UploadNewsletterToBackend(
   newsletterData: CreateNewsletterDTO,
 ): Promise<string> {
   try {
-    
     newsletterData.image_path = file === null ? null : file.name;
 
     const res = await sendDataNewsletterDataToDatabase(newsletterData);
@@ -96,7 +95,6 @@ export async function UploadNewsletterToBackend(
     }
 
     return res;
-
   } catch (error) {
     console.log(error);
     throw error;
@@ -106,55 +104,89 @@ export async function UploadNewsletterToBackend(
 //
 
 export async function GetNewslettersFromBackend(): Promise<GetNewsletterDTO[]> {
-  try{
-
-    const res = await fetch(`${backend_url}api/newsletter`, {method: "GET"});
+  try {
+    const res = await fetch(`${backend_url}api/newsletter`, { method: "GET" });
     const data = await res.json();
-    
-    if(!res.ok){
+
+    if (!res.ok) {
       console.error("Error response from server:", data);
       throw new Error(data.message);
     }
 
     return data.newsletters as GetNewsletterDTO[];
-
-  }catch(error){
+  } catch (error) {
     console.error("Error fetching newsletters from backend:", error);
-    throw new Error(`Failed to fetch newsletters from backend: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Failed to fetch newsletters from backend: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
 export async function deleteNewsletterFromBackend(id: number): Promise<string> {
-  try{
-    const res = await fetch(`${backend_url}api/newsletter/${id}`, {method: "DELETE"});
+  try {
+    const res = await fetch(`${backend_url}api/newsletter/${id}`, {
+      method: "DELETE",
+    });
     const data = await res.json();
-    if(!res.ok){
+    if (!res.ok) {
       console.error("Error response from server:", data);
       throw new Error(data.message);
     }
     return data.message;
-  }catch(error){
+  } catch (error) {
     console.error("Error deleting newsletter from backend:", error);
-    throw new Error(`Failed to delete newsletter from backend: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Failed to delete newsletter from backend: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
-export async function GetNewsletterByIdFromBackend(id: number): Promise<EditNewsletterDTO>{
-  try{
-
-    const res = await fetch(`${backend_url}api/newsletter/${id}`, {method: "GET"});
+export async function GetNewsletterByIdFromBackend(
+  id: number,
+): Promise<EditNewsletterDTO> {
+  try {
+    const res = await fetch(`${backend_url}api/newsletter/${id}`, {
+      method: "GET",
+    });
     const data = await res.json();
-    if(!res.ok){
+    if (!res.ok) {
       console.error("Error response from server:", data);
       throw new Error(data.message);
     }
 
-    return data;
-
-  }catch(error){
+    return data.editableNewsletter;
+  } catch (error) {
     console.error("Error getting newsletter from backend:", error);
-    throw new Error(`Failed to get newsletter data from backend: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Failed to get newsletter data from backend: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
+}
 
+export async function SendEditedNewsletterToBackend(
+  editedNewsletter: EditNewsletterDTO
+) {
+  try {
 
+    const res = await fetch(
+      `${backend_url}api/newsletter/${editedNewsletter.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(editedNewsletter),
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Error response from server:", data);
+      throw new Error(data.message);
+    }
+
+    return data.message;
+  } catch (error) {
+    console.error("Error editing newsletter:", error);
+    throw new Error(`${error instanceof Error ? error.message : String(error)}`);
+  }
 }

@@ -3,7 +3,7 @@ import "./EditNewsletter.css";
 import type { GetNewsletterDTO } from "../interfaces/GetNewsletterDTO";
 import { GetNewslettersFromBackend } from "../services/CloudTransport";
 import NewsletterSummary from "./NewsletterSummary";
-import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Button, Dialog, DialogContent } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import EditNewsletterPopup from "./EditNewsletterPopup";
 

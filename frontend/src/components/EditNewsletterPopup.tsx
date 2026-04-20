@@ -4,7 +4,8 @@ import { Button } from "@mui/material";
 import FileDragDrop from "./FileDragDrop";
 import {
   GetNewsletterByIdFromBackend,
-  OverrideNewsletterById,
+  SendEditedNewsletterToBackend,
+  UploadFile,
 } from "../services/CloudTransport";
 import type { EditNewsletterDTO } from "../interfaces/EditNewsletterDTO";
 
@@ -52,22 +53,30 @@ function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
   const onSubmitForm = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const updatedNewsletter = {
-      ...newNewsLetter,
-      slug: newNewsLetter.title.toLowerCase().replace(/\s+/g, "-"),
-    };
-
     try {
       //Dearrayify the file if it's an array
       const newFile = Array.isArray(file) ? file[0] : file;
       setFile(newFile);
 
-      const res = await OverrideNewsletterById(
-        newFile,
-        updatedNewsletter,
-        idToOverride,
-      );
+      let fileName = null;
+
+      if(newFile !== null){
+        UploadFile(newFile);
+        fileName = newFile.name;
+      }
+
+      const updatedNewsletter = {
+        ...newNewsLetter,
+        slug: newNewsLetter.title.toLowerCase().replace(/\s+/g, "-"),
+        image_path: fileName
+      };
+
+      console.log(updatedNewsletter)
+
+      const res = await SendEditedNewsletterToBackend(updatedNewsletter);
       alert(res);
+
+
     } catch (error) {
       alert(error instanceof Error ? error.message : "Something went wrong");
       return;
@@ -146,3 +155,4 @@ function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
 }
 
 export default EditNewsletterPopup;
+
