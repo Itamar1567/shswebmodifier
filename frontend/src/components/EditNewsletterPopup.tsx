@@ -60,9 +60,14 @@ function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
 
       let fileName = null;
 
-      if(newFile !== null){
+      //Current "Hack" to bypass null images when the user does not want to change an image, (Tech Debt)
+
+      if(newFile !== null && newNewsLetter.image_path === null){
         UploadFile(newFile);
         fileName = newFile.name;
+      }
+      else{
+        fileName = newNewsLetter.image_path;
       }
 
       const updatedNewsletter = {
