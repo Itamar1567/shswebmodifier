@@ -6,10 +6,12 @@ import ModifyTitle from "./components/ModifyTitle";
 import AddNewsletter from "./components/AddNewsletter";
 import DeleteNewsLetter from "./components/DeleteNewsletter";
 import EditNewsletter from "./components/EditNewsletter";
+import Navigationbar from "./components/Navigationbar";
 
 function App() {
   return (
     <Router>
+      <Navigationbar></Navigationbar>
       <div className="container">
         <Routes>
           <Route path="/" element={<Home></Home>}></Route>

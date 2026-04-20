@@ -3,3 +3,7 @@
     flex-direction: column;
     align-items: center;
 }
+
+.home-commit-container{
+    margin: 3rem;
+}
