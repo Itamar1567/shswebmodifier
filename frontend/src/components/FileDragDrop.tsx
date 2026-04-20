@@ -26,7 +26,7 @@ function DragDrop({ onFileChange }: Props) {
 
     if(!Array.isArray(incomingFile) && !checkFileSize(incomingFile)) {
       alert("File size exceeds the 5MB limit.");
-      return; 
+      return;
     }
 
     setFile(incomingFile);

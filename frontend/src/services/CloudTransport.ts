@@ -1,4 +1,5 @@
 import type { CreateNewsletterDTO } from "../interfaces/CreateNewsletterDTO";
+import type { EditNewsletterDTO } from "../interfaces/EditNewsletterDTO";
 import type { GetNewsletterDTO } from "../interfaces/GetNewsletterDTO";
 
 const backend_url = "http://localhost:5100/";
@@ -26,9 +27,10 @@ async function generateSignedUrlForFileUpload(file: File): Promise<string> {
     }
 
     return data.signedUrl;
+
   } catch (error) {
     throw new Error(
-      `Failed to generate signed URL: ${error instanceof Error ? error.message : String(error)}`
+      `${error instanceof Error ? error.message : String(error)}`
     );
   }
 }
@@ -45,9 +47,8 @@ async function UploadFile(file: File): Promise<void> {
     });
 
     if (!res.ok) {
-      const errorText = await res.text();
       throw new Error(
-        `Failed to upload file. Status: ${res.status}, Response: ${errorText}`,
+        `Failed to upload file.`,
       );
     }
   } catch (error) {
@@ -75,6 +76,10 @@ async function sendDataNewsletterDataToDatabase(newsLetterData: CreateNewsletter
     throw new Error(`Failed to upload newsletter data to database: ${error instanceof Error ? error.message : String(error)}`)
   }
 } 
+
+export async function OverrideNewsletterById(file: File | null, newsletterDataOverride: CreateNewsletterDTO, idToOverride: number){
+
+}
 
 export async function UploadNewsletterToBackend(
   file: File | null,
@@ -134,4 +139,22 @@ export async function deleteNewsletterFromBackend(id: number): Promise<string> {
   }
 }
 
+export async function GetNewsletterByIdFromBackend(id: number): Promise<EditNewsletterDTO>{
+  try{
 
+    const res = await fetch(`${backend_url}api/newsletter/${id}`, {method: "GET"});
+    const data = await res.json();
+    if(!res.ok){
+      console.error("Error response from server:", data);
+      throw new Error(data.message);
+    }
+
+    return data;
+
+  }catch(error){
+    console.error("Error getting newsletter from backend:", error);
+    throw new Error(`Failed to get newsletter data from backend: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+
+}

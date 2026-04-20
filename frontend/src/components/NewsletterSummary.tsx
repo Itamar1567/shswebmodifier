@@ -1,27 +1,15 @@
 import './NewsletterSummary.css';
 import type { GetNewsletterDTO } from '../interfaces/GetNewsletterDTO';
-import { deleteNewsletterFromBackend } from '../services/CloudTransport';
 
 interface Props{
-    onNewsletterDeleted: (deletedId: number) => void;
+    OnNewsletterClickAction: (deletedId: number) => void;
     newsLetter: GetNewsletterDTO;
 }
 
-function NewsletterSummary({ newsLetter, onNewsletterDeleted }: Props) {
-
-    async function deleteNewsletter(){
-        if(window.confirm("Are you sure you want to delete this newsletter? This action cannot be undone.")){
-            try{
-                const res = await deleteNewsletterFromBackend(newsLetter.id);
-                onNewsletterDeleted(newsLetter.id);
-                alert(res);
-            }catch(error){
-                console.log(error instanceof Error ? error.message : "Something went wrong");
-            }
-    }}
+function NewsletterSummary({ newsLetter, OnNewsletterClickAction }: Props) {
 
   return (
-    <div className="newsletter-summary-container" onClick={deleteNewsletter}>
+    <div className="newsletter-summary-container" onClick={() => OnNewsletterClickAction(newsLetter.id)}>
       <h1>
         {newsLetter.title}
       </h1>

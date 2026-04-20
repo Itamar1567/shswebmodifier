@@ -7,6 +7,7 @@ function ModifyNewsletters() {
   const actions = [
     { label: "Add newsletter", link: "/add-newsletter" },
     { label: "Delete newsletter", link: "/delete-newsletter" },
+    { label: "Edit newsletter", link: "/edit-newsletter" },
   ];
   return (
     <div className="modify-newsletter-container">
