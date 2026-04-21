@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
 import { Link as RouterLink } from "react-router-dom";
 import './Navigationbar.css'
+import { UserButton } from '@clerk/react';
 
 function Navigationbar(){
 
@@ -15,6 +16,9 @@ function Navigationbar(){
             <Button size='large' component={RouterLink} to={"/title"}>
                 Title
             </Button>
+        </div>
+        <div id="user-button">
+            <UserButton></UserButton>
         </div>
     </div>)
 }
