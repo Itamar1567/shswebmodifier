@@ -148,7 +148,8 @@ export async function GetNewsletterByIdFromBackend(
     const res = await fetch(`${backend_url}api/newsletter/${id}`, {
       method: "GET",
     });
-    const data = await res.json();
+    console.log(res)
+    const data = await res.json()
     if (!res.ok) {
       console.error("Error response from server:", data);
       throw new Error(data.message);
@@ -158,7 +159,7 @@ export async function GetNewsletterByIdFromBackend(
   } catch (error) {
     console.error("Error getting newsletter from backend:", error);
     throw new Error(
-      `Failed to get newsletter data from backend: ${error instanceof Error ? error.message : String(error)}`,
+      `Failed to get newsletter data from backend`,
     );
   }
 }

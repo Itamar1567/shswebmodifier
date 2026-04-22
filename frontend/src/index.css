@@ -1,7 +1,14 @@
-#root {
-  
+html, body {
+  height: 100%;
+  margin: 0rem;
 }
 
-body {
-  margin: 1rem;
+#root { /* or your main wrapper */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
 }

@@ -1,12 +1,18 @@
 #back-button {
   align-self: flex-start;
-  margin: 20px;
+  margin: 3rem;
 }
+.delete-page{
+  max-width: 900px;
+  width: 100%;
+}
+
 .delete-newsletter-container {
+  border-radius: 0.5rem;
+  padding: 3rem;
+  border-style: solid;
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
-  border-radius: 9px;
-  gap: 55px;
+  gap: 35px;
 }
 

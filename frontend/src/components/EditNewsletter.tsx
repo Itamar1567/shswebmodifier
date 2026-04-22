@@ -9,11 +9,19 @@ import EditNewsletterPopup from "./EditNewsletterPopup";
 
 function EditNewsletter() {
 
-  function handlePopupClose(){
-    if(window.confirm("Are you sure you want to exit, all unsaved edits will be lost")){
-        setIsPopupOpen(false)
+  function handlePopupClose(giveWarning: boolean) {
+    if (giveWarning) {
+      if (window.confirm("Are you sure you want to exit, all unsaved edits will be lost")) {
+        setIsPopupOpen(false);
+      }
+    }else{
+      setIsPopupOpen(false)
     }
-  } 
+  }
+
+  function refreshPageOnSubmition(){
+    setReFetchNewsletters(!reFetchNewsletters) 
+  }
 
   function OnClickEditNewsletter(id: number) {
     setSelectedId(id);
@@ -25,6 +33,8 @@ function EditNewsletter() {
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const [reFetchNewsletters, setReFetchNewsletters] = useState(false)
 
   useEffect(() => {
     const fetchNewsLetters = async () => {
@@ -41,10 +51,11 @@ function EditNewsletter() {
       }
     };
     fetchNewsLetters();
-  }, []);
+  }, [reFetchNewsletters]);
 
   return (
     <div className="editor-page">
+      <h1>Editor</h1>
       <div className="edit-newsletter-container">
         {loading ? (
           <p>Loading...</p>
@@ -67,7 +78,11 @@ function EditNewsletter() {
         >
           <DialogContent>
             {selectedId !== null && (
-              <EditNewsletterPopup idToOverride={selectedId} handlePopupClose={handlePopupClose} />
+              <EditNewsletterPopup
+                idToOverride={selectedId}
+                handlePopupClose={handlePopupClose}
+                refreshOnSubmit={refreshPageOnSubmition}
+              />
             )}
           </DialogContent>
         </Dialog>

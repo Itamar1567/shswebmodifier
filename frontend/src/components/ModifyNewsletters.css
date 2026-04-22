@@ -1,7 +1,10 @@
 .modify-newsletter-container{
+    border-style: solid;
+    border-radius: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    padding: 5rem;
 }
 .modify-newsletter-options-container{
     display: flex;

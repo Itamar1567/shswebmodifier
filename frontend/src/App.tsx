@@ -9,12 +9,12 @@ import EditNewsletter from "./components/EditNewsletter";
 import Navigationbar from "./components/Navigationbar";
 import { Show } from "@clerk/react";
 import SignInPage from "./components/SignInPage";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
       <Show when={"signed-out"}>
-        {" "}
         <SignInPage></SignInPage>
       </Show>
       <Show when={"signed-in"}>
@@ -42,6 +42,7 @@ function App() {
           </Routes>
         </div>
       </Show>
+      <Footer></Footer>
     </Router>
   );
 }

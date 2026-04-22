@@ -11,10 +11,18 @@ import type { EditNewsletterDTO } from "../interfaces/EditNewsletterDTO";
 
 interface Props {
   idToOverride: number;
-  handlePopupClose: () => void;
+  handlePopupClose: (giveWarning: boolean) => void;
+  refreshOnSubmit: () => void;
 }
 
-function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
+function EditNewsletterPopup({
+  idToOverride,
+  handlePopupClose,
+  refreshOnSubmit,
+}: Props) {
+
+  const [prevTitle, setPrevTitle] = useState("")
+
   const [loading, setLoading] = useState<Boolean>(true);
 
   useEffect(() => {
@@ -22,6 +30,7 @@ function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
       try {
         const data = await GetNewsletterByIdFromBackend(idToOverride);
         setNewNewsLetter(data);
+        setPrevTitle(data.title)
       } catch (error) {
         alert(error);
       } finally {
@@ -62,26 +71,25 @@ function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
 
       //Current "Hack" to bypass null images when the user does not want to change an image, (Tech Debt)
 
-      if(newFile !== null && newNewsLetter.image_path === null){
+      if (newFile !== null && newNewsLetter.image_path === null) {
         UploadFile(newFile);
         fileName = newFile.name;
-      }
-      else{
+      } else {
         fileName = newNewsLetter.image_path;
       }
 
       const updatedNewsletter = {
         ...newNewsLetter,
         slug: newNewsLetter.title.toLowerCase().replace(/\s+/g, "-"),
-        image_path: fileName
+        image_path: fileName,
       };
 
-      console.log(updatedNewsletter)
+      console.log(updatedNewsletter);
 
       const res = await SendEditedNewsletterToBackend(updatedNewsletter);
+      refreshOnSubmit();
       alert(res);
-
-
+      handlePopupClose(false);
     } catch (error) {
       alert(error instanceof Error ? error.message : "Something went wrong");
       return;
@@ -92,7 +100,11 @@ function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
     <div className="edit-popup-newsletter-container">
       <div id="editor-header">
         <h1>Editor</h1>
-        <Button variant="contained" color="error" onClick={handlePopupClose}>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => handlePopupClose(true)}
+        >
           Close
         </Button>
       </div>
@@ -101,7 +113,7 @@ function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
         <p>Loading...</p>
       ) : (
         <div>
-          <p>Currently Editing {newNewsLetter.title}</p>
+          <p>Currently Editing {prevTitle}</p>
           <form className="add-newsletter-form" onSubmit={onSubmitForm}>
             <input
               value={newNewsLetter.author}
@@ -160,4 +172,3 @@ function EditNewsletterPopup({ idToOverride, handlePopupClose }: Props) {
 }
 
 export default EditNewsletterPopup;
-

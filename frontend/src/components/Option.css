@@ -1,15 +1,14 @@
 #option-link{
-    border-radius: 0.9rem;
-    border-color: rgb(123, 0, 129);
+    border-radius: 0.5rem;
+    border-color: rgb(0, 0, 0);
     border-style: solid;
     border-width: 2px;
-    background-color: rgb(255, 95, 231);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    background-color: rgb(65, 153, 255);
+    transition: background-color 0.3s ease;
 }
 
 #option-link:hover{
-    background-color: rgb(255, 171, 238);
-    border-color: rgb(197, 0, 207);
+    background-color: rgb(53, 49, 255);
 
 }
 

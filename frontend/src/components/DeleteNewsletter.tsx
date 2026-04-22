@@ -53,6 +53,7 @@ function DeleteNewsLetter() {
 
   return (
     <div className="delete-page">
+      <h1>Deletion</h1>
       <div className="delete-newsletter-container">
         {loading ? (
           <p>Loading...</p>
