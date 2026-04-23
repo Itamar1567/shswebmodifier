@@ -1,11 +1,16 @@
 import type { CreateNewsletterDTO } from "../interfaces/CreateNewsletterDTO";
 import type { EditNewsletterDTO } from "../interfaces/EditNewsletterDTO";
 import type { GetNewsletterDTO } from "../interfaces/GetNewsletterDTO";
+import { TokenValidator } from "../utils/Validation";
 
 const backend_url = "http://localhost:5100/";
 
-async function generateSignedUrlForFileUpload(file: File): Promise<string> {
+async function generateSignedUrlForFileUpload(
+  file: File,
+  getToken: () => Promise<string | null>,
+): Promise<string> {
   try {
+    const token = await TokenValidator(getToken);
     const res = await fetch(
       `${backend_url}api/cloudstorage/generate-signed-url`,
       {
@@ -15,7 +20,10 @@ async function generateSignedUrlForFileUpload(file: File): Promise<string> {
           type: file.type,
           size: file.size,
         }),
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
 
@@ -34,14 +42,20 @@ async function generateSignedUrlForFileUpload(file: File): Promise<string> {
   }
 }
 
-export async function UploadFile(file: File): Promise<void> {
+export async function UploadFile(
+  file: File,
+  getToken: () => Promise<string | null>,
+): Promise<void> {
   try {
-    const url = await generateSignedUrlForFileUpload(file);
+    const url = await generateSignedUrlForFileUpload(file, getToken);
+
+    const token = await TokenValidator(getToken);
     const res = await fetch(url, {
       method: "PUT",
       body: file,
       headers: {
         "Content-Type": file.type,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -55,12 +69,17 @@ export async function UploadFile(file: File): Promise<void> {
 
 async function sendDataNewsletterDataToDatabase(
   newsLetterData: CreateNewsletterDTO,
+  getToken: () => Promise<string | null>,
 ) {
   try {
+    const token = await TokenValidator(getToken);
     const res = await fetch(`${backend_url}api/newsletter`, {
       method: "POST",
       body: JSON.stringify(newsLetterData),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const data = await res.json();
@@ -84,14 +103,18 @@ async function sendDataNewsletterDataToDatabase(
 export async function UploadNewsletterToBackend(
   file: File | null,
   newsletterData: CreateNewsletterDTO,
+  getToken: () => Promise<string | null>,
 ): Promise<string> {
   try {
     newsletterData.image_path = file === null ? null : file.name;
 
-    const res = await sendDataNewsletterDataToDatabase(newsletterData);
+    const res = await sendDataNewsletterDataToDatabase(
+      newsletterData,
+      getToken,
+    );
 
     if (file !== null) {
-      await UploadFile(file);
+      await UploadFile(file, getToken);
     }
 
     return res;
@@ -122,10 +145,16 @@ export async function GetNewslettersFromBackend(): Promise<GetNewsletterDTO[]> {
   }
 }
 
-export async function deleteNewsletterFromBackend(id: number): Promise<string> {
+export async function deleteNewsletterFromBackend(
+  id: number,
+  getToken: () => Promise<string | null>,
+): Promise<string> {
   try {
+    const token = await TokenValidator(getToken);
+
     const res = await fetch(`${backend_url}api/newsletter/${id}`, {
       method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
     if (!res.ok) {
@@ -148,8 +177,8 @@ export async function GetNewsletterByIdFromBackend(
     const res = await fetch(`${backend_url}api/newsletter/${id}`, {
       method: "GET",
     });
-    console.log(res)
-    const data = await res.json()
+    console.log(res);
+    const data = await res.json();
     if (!res.ok) {
       console.error("Error response from server:", data);
       throw new Error(data.message);
@@ -158,23 +187,26 @@ export async function GetNewsletterByIdFromBackend(
     return data.editableNewsletter;
   } catch (error) {
     console.error("Error getting newsletter from backend:", error);
-    throw new Error(
-      `Failed to get newsletter data from backend`,
-    );
+    throw new Error(`Failed to get newsletter data from backend`);
   }
 }
 
 export async function SendEditedNewsletterToBackend(
-  editedNewsletter: EditNewsletterDTO
+  editedNewsletter: EditNewsletterDTO,
+  getToken: () => Promise<string | null>,
 ) {
   try {
+    const token = await TokenValidator(getToken);
 
     const res = await fetch(
       `${backend_url}api/newsletter/${editedNewsletter.id}`,
       {
         method: "PATCH",
         body: JSON.stringify(editedNewsletter),
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
 
@@ -188,6 +220,8 @@ export async function SendEditedNewsletterToBackend(
     return data.message;
   } catch (error) {
     console.error("Error editing newsletter:", error);
-    throw new Error(`${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }

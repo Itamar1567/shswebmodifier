@@ -1,14 +1,16 @@
 import "./DeleteNewsletter.css";
 import { useEffect, useState } from "react";
 import type { GetNewsletterDTO } from "../interfaces/GetNewsletterDTO";
-import {
-  deleteNewsletterFromBackend,
-  GetNewslettersFromBackend,
-} from "../services/CloudTransport";
+import { deleteNewsletterFromBackend, GetNewslettersFromBackend } from "../services/CloudTransport";
 import NewsletterSummary from "./NewsletterSummary";
 import { Button } from "@mui/material";
-import { Route, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import { useAuth } from "@clerk/react";
+
 function DeleteNewsLetter() {
+
+  const { getToken } = useAuth();
+
   const [newsLetters, setNewsLetters] = useState<GetNewsletterDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -19,7 +21,7 @@ function DeleteNewsLetter() {
       )
     ) {
       try {
-        const res = await deleteNewsletterFromBackend(id);
+        const res = await deleteNewsletterFromBackend(id, getToken);
         alert(res);
       } catch (error) {
         console.log(

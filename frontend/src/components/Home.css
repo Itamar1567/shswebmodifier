@@ -8,5 +8,7 @@
 }
 
 .home-commit-container{
+    border-style: solid;
     margin: 3rem;
+    border-radius: 0.5rem;
 }

@@ -8,6 +8,7 @@ import {
   UploadFile,
 } from "../services/CloudTransport";
 import type { EditNewsletterDTO } from "../interfaces/EditNewsletterDTO";
+import { useAuth } from "@clerk/react";
 
 interface Props {
   idToOverride: number;
@@ -20,6 +21,9 @@ function EditNewsletterPopup({
   handlePopupClose,
   refreshOnSubmit,
 }: Props) {
+
+
+  const { getToken } = useAuth()
 
   const [prevTitle, setPrevTitle] = useState("")
 
@@ -72,7 +76,7 @@ function EditNewsletterPopup({
       //Current "Hack" to bypass null images when the user does not want to change an image, (Tech Debt)
 
       if (newFile !== null && newNewsLetter.image_path === null) {
-        UploadFile(newFile);
+        UploadFile(newFile, getToken);
         fileName = newFile.name;
       } else {
         fileName = newNewsLetter.image_path;
@@ -86,7 +90,7 @@ function EditNewsletterPopup({
 
       console.log(updatedNewsletter);
 
-      const res = await SendEditedNewsletterToBackend(updatedNewsletter);
+      const res = await SendEditedNewsletterToBackend(updatedNewsletter, getToken);
       refreshOnSubmit();
       alert(res);
       handlePopupClose(false);
