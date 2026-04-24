@@ -10,7 +10,7 @@ function NewsletterSummary({ newsLetter, OnNewsletterClickAction }: Props) {
 
   return (
     <div className="newsletter-summary-container" onClick={() => OnNewsletterClickAction(newsLetter.id)}>
-      <h1>
+      <h1 className="text-overflow-wrapper">
         {newsLetter.title}
       </h1>
       {newsLetter.image_path != null ? <img
@@ -18,7 +18,7 @@ function NewsletterSummary({ newsLetter, OnNewsletterClickAction }: Props) {
         src={newsLetter.image_path}
         alt={newsLetter.title}
       /> : <p>No image available</p>}
-      <p>
+      <p className="text-overflow-wrapper">
         {newsLetter.short_description}
       </p>
       <section className="dates-section">

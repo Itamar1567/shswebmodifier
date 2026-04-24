@@ -1,14 +1,9 @@
 html, body {
   height: 100%;
-  margin: 0rem;
+  margin: 0;
 }
 
-#root { /* or your main wrapper */
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.main-content {
-  flex: 1;
+input{
+  padding: 0.5rem;
+  border-radius: 0.3rem;
 }

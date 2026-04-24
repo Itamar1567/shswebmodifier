@@ -1,16 +1,13 @@
 import type { CreateNewsletterDTO } from "../interfaces/CreateNewsletterDTO";
 import type { EditNewsletterDTO } from "../interfaces/EditNewsletterDTO";
 import type { GetNewsletterDTO } from "../interfaces/GetNewsletterDTO";
-import { TokenValidator } from "../utils/Validation";
 
 const backend_url = "http://localhost:5100/";
 
 async function generateSignedUrlForFileUpload(
-  file: File,
-  getToken: () => Promise<string | null>,
+  file: File, token: string
 ): Promise<string> {
   try {
-    const token = await TokenValidator(getToken);
     const res = await fetch(
       `${backend_url}api/cloudstorage/generate-signed-url`,
       {
@@ -33,7 +30,6 @@ async function generateSignedUrlForFileUpload(
       console.error("Error response from server:", data);
       throw new Error(data.message);
     }
-
     return data.signedUrl;
   } catch (error) {
     throw new Error(
@@ -44,35 +40,31 @@ async function generateSignedUrlForFileUpload(
 
 export async function UploadFile(
   file: File,
-  getToken: () => Promise<string | null>,
+  token: string
 ): Promise<void> {
   try {
-    const url = await generateSignedUrlForFileUpload(file, getToken);
-
-    const token = await TokenValidator(getToken);
+    const url = await generateSignedUrlForFileUpload(file, token);
     const res = await fetch(url, {
       method: "PUT",
       body: file,
       headers: {
         "Content-Type": file.type,
-        Authorization: `Bearer ${token}`,
       },
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to upload file.`);
+      throw new Error("Failed to upload the image to the cloud");
     }
   } catch (error) {
     throw error;
   }
 }
 
-async function sendDataNewsletterDataToDatabase(
+async function SendDataNewsletterDataToDatabase(
   newsLetterData: CreateNewsletterDTO,
-  getToken: () => Promise<string | null>,
+  token: string
 ) {
   try {
-    const token = await TokenValidator(getToken);
     const res = await fetch(`${backend_url}api/newsletter`, {
       method: "POST",
       body: JSON.stringify(newsLetterData),
@@ -89,8 +81,6 @@ async function sendDataNewsletterDataToDatabase(
       throw new Error(data.message);
     }
 
-    console.log("Response from server:", data);
-
     return data.message;
   } catch (error) {
     console.error("Error uploading newsletter data to database:", error);
@@ -103,18 +93,18 @@ async function sendDataNewsletterDataToDatabase(
 export async function UploadNewsletterToBackend(
   file: File | null,
   newsletterData: CreateNewsletterDTO,
-  getToken: () => Promise<string | null>,
+  token: string
 ): Promise<string> {
   try {
     newsletterData.image_path = file === null ? null : file.name;
 
-    const res = await sendDataNewsletterDataToDatabase(
+    const res = await SendDataNewsletterDataToDatabase(
       newsletterData,
-      getToken,
+      token
     );
 
     if (file !== null) {
-      await UploadFile(file, getToken);
+      await UploadFile(file, token);
     }
 
     return res;
@@ -145,12 +135,11 @@ export async function GetNewslettersFromBackend(): Promise<GetNewsletterDTO[]> {
   }
 }
 
-export async function deleteNewsletterFromBackend(
+export async function DeleteNewsletterFromBackend(
   id: number,
-  getToken: () => Promise<string | null>,
+  token: string
 ): Promise<string> {
   try {
-    const token = await TokenValidator(getToken);
 
     const res = await fetch(`${backend_url}api/newsletter/${id}`, {
       method: "DELETE",
@@ -193,11 +182,9 @@ export async function GetNewsletterByIdFromBackend(
 
 export async function SendEditedNewsletterToBackend(
   editedNewsletter: EditNewsletterDTO,
-  getToken: () => Promise<string | null>,
+  token: string
 ) {
   try {
-    const token = await TokenValidator(getToken);
-
     const res = await fetch(
       `${backend_url}api/newsletter/${editedNewsletter.id}`,
       {

@@ -2,13 +2,9 @@ import "./EditNewsletterPopup.css";
 import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import FileDragDrop from "./FileDragDrop";
-import {
-  GetNewsletterByIdFromBackend,
-  SendEditedNewsletterToBackend,
-  UploadFile,
-} from "../services/CloudTransport";
+import { GetNewsletterByIdFromBackend } from "../services/CloudTransport";
+import { UseNewsletterHooks } from "../hooks/UseNewsletterHooks";
 import type { EditNewsletterDTO } from "../interfaces/EditNewsletterDTO";
-import { useAuth } from "@clerk/react";
 
 interface Props {
   idToOverride: number;
@@ -22,8 +18,7 @@ function EditNewsletterPopup({
   refreshOnSubmit,
 }: Props) {
 
-
-  const { getToken } = useAuth()
+  const {UseUploadFile, UseSendEditedNewsletterToBackend} = UseNewsletterHooks();
 
   const [prevTitle, setPrevTitle] = useState("")
 
@@ -69,14 +64,12 @@ function EditNewsletterPopup({
     try {
       //Dearrayify the file if it's an array
       const newFile = Array.isArray(file) ? file[0] : file;
-      setFile(newFile);
 
       let fileName = null;
 
       //Current "Hack" to bypass null images when the user does not want to change an image, (Tech Debt)
-
-      if (newFile !== null && newNewsLetter.image_path === null) {
-        UploadFile(newFile, getToken);
+      if (newFile !== null) {
+        await UseUploadFile(newFile);
         fileName = newFile.name;
       } else {
         fileName = newNewsLetter.image_path;
@@ -90,7 +83,7 @@ function EditNewsletterPopup({
 
       console.log(updatedNewsletter);
 
-      const res = await SendEditedNewsletterToBackend(updatedNewsletter, getToken);
+      const res = await UseSendEditedNewsletterToBackend(updatedNewsletter);
       refreshOnSubmit();
       alert(res);
       handlePopupClose(false);

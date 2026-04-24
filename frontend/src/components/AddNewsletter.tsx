@@ -4,12 +4,12 @@ import { Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import FileDragDrop from "./FileDragDrop";
 import { useState } from "react";
-import { UploadNewsletterToBackend } from "../services/CloudTransport";
-import { useAuth } from "@clerk/react";
+import { UseNewsletterHooks } from "../hooks/UseNewsletterHooks";
 
 function AddNewsletter() {
 
-  const { getToken } = useAuth()
+  const { UseUploadNewsletterToBackend } = UseNewsletterHooks();
+  
   const [file, setFile] = useState<File | File[] | null>(null);
 
   function handleFileChange(newFile: File | File[] | null): void {
@@ -50,7 +50,7 @@ function AddNewsletter() {
       const newFile = Array.isArray(file) ? file[0] : file;
       setFile(newFile);
 
-      const res = await UploadNewsletterToBackend(newFile, updatedNewsletter, getToken)
+      const res = await UseUploadNewsletterToBackend(newFile, updatedNewsletter)
       alert(res);
 
     }catch(error){

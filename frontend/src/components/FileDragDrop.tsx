@@ -36,7 +36,7 @@ function DragDrop({ onFileChange }: Props) {
   return (
     <div>
       <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
-      <p>
+      <p className="text-overflow-wrapper">
         File name:{" "}
         {file
           ? Array.isArray(file)
