@@ -118,7 +118,6 @@ export async function UploadNewsletterToBackend(
 
 export async function GetNewslettersFromBackend(): Promise<GetNewsletterDTO[]> {
   try {
-    console.log(backend_endpoint)
     const res = await fetch(`${backend_endpoint}api/newsletter`, { method: "GET" });
     const data = await res.json();
 
@@ -167,7 +166,6 @@ export async function GetNewsletterByIdFromBackend(
     const res = await fetch(`${backend_endpoint}api/newsletter/${id}`, {
       method: "GET",
     });
-    console.log(res);
     const data = await res.json();
     if (!res.ok) {
       console.error("Error response from server:", data);
