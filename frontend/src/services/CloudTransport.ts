@@ -2,14 +2,14 @@ import type { CreateNewsletterDTO } from "../interfaces/CreateNewsletterDTO";
 import type { EditNewsletterDTO } from "../interfaces/EditNewsletterDTO";
 import type { GetNewsletterDTO } from "../interfaces/GetNewsletterDTO";
 
-const backend_url = "http://localhost:5100/";
+const backend_endpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 async function generateSignedUrlForFileUpload(
   file: File, token: string
 ): Promise<string> {
   try {
     const res = await fetch(
-      `${backend_url}api/cloudstorage/generate-signed-url`,
+      `${backend_endpoint}api/cloudstorage/generate-signed-url`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -65,7 +65,7 @@ async function SendDataNewsletterDataToDatabase(
   token: string
 ) {
   try {
-    const res = await fetch(`${backend_url}api/newsletter`, {
+    const res = await fetch(`${backend_endpoint}api/newsletter`, {
       method: "POST",
       body: JSON.stringify(newsLetterData),
       headers: {
@@ -118,7 +118,8 @@ export async function UploadNewsletterToBackend(
 
 export async function GetNewslettersFromBackend(): Promise<GetNewsletterDTO[]> {
   try {
-    const res = await fetch(`${backend_url}api/newsletter`, { method: "GET" });
+    console.log(backend_endpoint)
+    const res = await fetch(`${backend_endpoint}api/newsletter`, { method: "GET" });
     const data = await res.json();
 
     if (!res.ok) {
@@ -141,7 +142,7 @@ export async function DeleteNewsletterFromBackend(
 ): Promise<string> {
   try {
 
-    const res = await fetch(`${backend_url}api/newsletter/${id}`, {
+    const res = await fetch(`${backend_endpoint}api/newsletter/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -163,7 +164,7 @@ export async function GetNewsletterByIdFromBackend(
   id: number,
 ): Promise<EditNewsletterDTO> {
   try {
-    const res = await fetch(`${backend_url}api/newsletter/${id}`, {
+    const res = await fetch(`${backend_endpoint}api/newsletter/${id}`, {
       method: "GET",
     });
     console.log(res);
@@ -186,7 +187,7 @@ export async function SendEditedNewsletterToBackend(
 ) {
   try {
     const res = await fetch(
-      `${backend_url}api/newsletter/${editedNewsletter.id}`,
+      `${backend_endpoint}api/newsletter/${editedNewsletter.id}`,
       {
         method: "PATCH",
         body: JSON.stringify(editedNewsletter),

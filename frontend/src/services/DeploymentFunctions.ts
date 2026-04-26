@@ -1,8 +1,8 @@
-const backend_url = "http://localhost:5100/";
+const backend_endpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 export async function RedeployWebsite(): Promise<string>{
     try{
-        const res = await fetch(`${backend_url}api/netlify`, {method: "GET"})
+        const res = await fetch(`${backend_endpoint}api/netlify`, {method: "GET"})
         const data = await res.json()
 
         if(!res.ok){

@@ -13,9 +13,6 @@ function Navigationbar(){
             <Button size='large' component={RouterLink} to={"/newsletters"}>
                 Newsletters
             </Button>
-            <Button size='large' component={RouterLink} to={"/title"}>
-                Title
-            </Button>
         </div>
         <div id="user-button">
             <UserButton></UserButton>
