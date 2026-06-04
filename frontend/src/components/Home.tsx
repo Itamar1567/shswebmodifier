@@ -1,13 +1,15 @@
 import { Button } from "@mui/material";
 import "./Home.css"
 import OptionsList from "./OptionsList";
-import { RedeployWebsite } from "../services/DeploymentFunctions";
+import { UseNetlifyHooks } from "../hooks/UseNetlifyHooks";
 
 function Home() {
 
+  const { UseRedeployWebsite } = UseNetlifyHooks();
+  
   async function handleCommit(){
     try{
-      const data = await RedeployWebsite()
+      const data = await UseRedeployWebsite()
       alert(data)
     }
     catch(error){
