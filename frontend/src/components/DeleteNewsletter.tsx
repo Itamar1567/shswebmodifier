@@ -36,8 +36,10 @@ function DeleteNewsLetter() {
   }
 
   async function onNewsLetterDeleted(deletedId: number) {
-    await deleteNewsletter(deletedId);
-    setNewsLetters(newsLetters.filter((n) => n.id !== deletedId));
+    const deleted = await deleteNewsletter(deletedId);
+    if (deleted) {
+      setNewsLetters(newsLetters.filter((n) => n.id !== deletedId));
+    }
   }
 
   useEffect(() => {
