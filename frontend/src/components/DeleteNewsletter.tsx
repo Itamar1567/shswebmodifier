@@ -2,13 +2,12 @@ import "./DeleteNewsletter.css";
 import { useEffect, useState } from "react";
 import type { GetNewsletterDTO } from "../interfaces/GetNewsletterDTO";
 import { GetNewslettersFromBackend } from "../services/CloudTransport";
-import { UseNewsletterHooks } from "../hooks/UseNewsletterHooks"
+import { UseNewsletterHooks } from "../hooks/UseNewsletterHooks";
 import NewsletterSummary from "./NewsletterSummary";
 import { Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 function DeleteNewsLetter() {
-
   const { UseDeleteNewsletterFromBackend } = UseNewsletterHooks();
 
   const [newsLetters, setNewsLetters] = useState<GetNewsletterDTO[]>([]);
@@ -23,11 +22,16 @@ function DeleteNewsLetter() {
       try {
         const res = await UseDeleteNewsletterFromBackend(id);
         alert(res);
+        return true;
       } catch (error) {
         console.log(
           error instanceof Error ? error.message : "Something went wrong",
         );
+        return false;
       }
+    }
+    else{
+      return false;
     }
   }
 
