@@ -5,7 +5,7 @@ function Footer() {
     <div className="footer-container">
       <div className="footer-links">
         <a
-          href="https://github.com/shs-webmodifier"
+          href="https://github.com/Itamar1567/shswebmodifier"
           target="_blank"
           rel="noopener noreferrer"
         >
